@@ -21,9 +21,9 @@ DEVICE="$1"
 EXTRAS="$2"
 
 # get current version
-MAJOR=$(cat $DIR/vendor/pa/config/pa_common.mk | grep 'PA_VERSION_MAJOR = *' | sed  's/PA_VERSION_MAJOR = //g')
-MINOR=$(cat $DIR/vendor/pa/config/pa_common.mk | grep 'PA_VERSION_MINOR = *' | sed  's/PA_VERSION_MINOR = //g')
-MAINTENANCE=$(cat $DIR/vendor/pa/config/pa_common.mk | grep 'PA_VERSION_MAINTENANCE = *' | sed  's/PA_VERSION_MAINTENANCE = //g')
+MAJOR=$(cat $DIR/vendor/ps/config/pa_common.mk | grep 'PA_VERSION_MAJOR = *' | sed  's/PA_VERSION_MAJOR = //g')
+MINOR=$(cat $DIR/vendor/ps/config/pa_common.mk | grep 'PA_VERSION_MINOR = *' | sed  's/PA_VERSION_MINOR = //g')
+MAINTENANCE=$(cat $DIR/vendor/ps/config/pa_common.mk | grep 'PA_VERSION_MAINTENANCE = *' | sed  's/PA_VERSION_MAINTENANCE = //g')
 VERSION=$MAJOR.$MINOR$MAINTENANCE
 
 # if we have not extras, reduce parameter index by 1
@@ -45,10 +45,6 @@ clear
 
 echo -e "${cya}Building ${bldcya}ParanoidAndroid v$VERSION ${txtrst}";
 
-echo -e "${cya}"
-./vendor/pa/tools/getdevicetree.py $DEVICE
-echo -e "${txtrst}"
-
 # decide what command to execute
 case "$EXTRAS" in
    threads)
@@ -61,22 +57,6 @@ case "$EXTRAS" in
        make clean > /dev/null;;
 esac
 
-# download prebuilt files
-echo -e ""
-echo -e "${bldblu}Downloading prebuilts ${txtrst}"
-cd vendor/cm
-./get-prebuilts
-cd ./../..
-
-# sync with latest sources
-echo -e ""
-if [ "$SYNC" == "true" ]
-then
-   echo -e "${bldblu}Fetching latest sources ${txtrst}"
-   repo sync -j"$THREADS"
-   echo -e ""
-fi
-
 # setup environment
 echo -e "${bldblu}Setting up environment ${txtrst}"
 . build/envsetup.sh
@@ -84,13 +64,13 @@ echo -e "${bldblu}Setting up environment ${txtrst}"
 # lunch device
 echo -e ""
 echo -e "${bldblu}Lunching device ${txtrst}"
-lunch "pa_$DEVICE-userdebug";
+lunch "ps_$DEVICE-userdebug";
 
 echo -e ""
 echo -e "${bldblu}Starting compilation ${txtrst}"
 
 # start compilation
-brunch "pa_$DEVICE-userdebug";
+brunch "ps_$DEVICE-userdebug";
 echo -e ""
 
 # finished? get elapsed time
